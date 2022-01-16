@@ -5,28 +5,32 @@ class Adapter extends React.Component {
         super(props);
         this.refHold;
     }
-    init(hydrate) {
+    init() {
         (async () => {
             const ReactDOM = (await import('app2/newReactDOM')).default;
             const React = (await import('app2/newReact')).default;
             const RemoteComponent = await this.props.importer();
             const { importer, children, ...rest } = this.props;
-            const renderMethod = hydrate ? ReactDOM.hydrate : ReactDOM.render;
-            renderMethod(React.createElement(RemoteComponent.default, rest, children), this.refHold);
+            ReactDOM.render(React.createElement(RemoteComponent.default, rest, children), this.refHold);
         })();
     };
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.init(true);
+        console.log('componentDidUpdate', prevProps, prevState, snapshot);
+        this.init();
     }
 
     componentDidMount() {
         this.init();
     }
 
+    componentWillUnmount(){
+        ReactDOM.unmountComponentAtNode(this.refHold);
+    }
+
     render() {
         return (
             <div
-                style={{ border: '1px red solid', padding: '10px', margin: '20px 0' }}
+                id={this.props.name}
                 ref={ref => (this.refHold = ref)}
             />
         );

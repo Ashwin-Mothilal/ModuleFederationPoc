@@ -5,17 +5,32 @@ import Adapter from "./Adapter";
 // console.log("The NewReact is ", React)
 
 class Host extends React.Component {
-  render(){
+  constructor() {
+    super();
+    this.state = {
+      count: 0
+    }
+  }
+  render() {
     return (
-      <div style={{ height: 50, width: '100%', backgroundColor: 'red' }}>
-        <span>This is a Host App</span>
-          <Adapter importer={
-            ()=> import("app2/Header")
-          }/>
-          {/* <BaseCounter/> */}
-          {/* <Button/> */}
+      <div style={{ backgroundColor: 'green', padding: 24, }}>
+        {/* <span>This is a Host App</span> */}
+        <Adapter name={"micro-app-header"} importer={
+          () => import("app2/Header")
+        } count={this.state.count} />
+        {/* <Button/> */}
       </div>
     )
+  }
+
+  componentDidMount(){
+    setInterval(()=>{
+      this.setState((prevState)=>{
+        return {
+          count: prevState.count + 1
+        }
+      })
+    }, 5000)
   }
 }
 
